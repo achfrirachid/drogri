@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1e2a4a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>دروݣري محمد</title>
+<style>
+:root{--bg:#eef1f5;--card:#fff;--tx:#17213a;--mut:#667089;--ink:#1e2a4a;--tag:#f2b705;--tagtx:#2b2100;--red:#d62828;--org:#e07a00;--grn:#2a9d54;--bd:#dde2ea;--soft:#f6f8fb}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1526;--card:#182037;--tx:#e9edf7;--mut:#99a4c0;--ink:#0b1020;--bd:#28324f;--soft:#1e2742;--red:#ff6b6b;--org:#ffa94d;--grn:#51cf86}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:"Noto Naskh Arabic","Segoe UI",Tahoma,system-ui,sans-serif;font-size:16px;line-height:1.5;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+header{background:var(--ink);color:#fff;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 14px;position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:10px}
+header h1{font-size:19px;margin:0;font-weight:700}
+header small{display:block;opacity:.75;font-size:12.5px;direction:ltr;text-align:right}
+header .tag{background:var(--tag);color:var(--tagtx);border-radius:6px;padding:3px 10px;font-weight:700;font-size:13px}
+main{padding:14px 14px 20px;max-width:720px;margin:0 auto}
+h2{font-size:16px;margin:18px 2px 8px;color:var(--mut);font-weight:700}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 12px}
+.stat small{color:var(--mut);display:block;font-size:13px}
+.stat b{font-size:19px}
+.red{color:var(--red)}.grn{color:var(--grn)}.org{color:var(--org)}
+.item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer}
+.item:active{background:var(--soft)}
+.item b{display:block}
+.item small{color:var(--mut);font-size:13.5px}
+.badge{background:var(--tag);color:var(--tagtx);font-weight:700;border-radius:6px 14px 14px 6px;padding:4px 12px;white-space:nowrap;font-size:15px;direction:ltr;flex-shrink:0}
+.badge.red{background:var(--red);color:#fff}.badge.org{background:var(--org);color:#fff}.badge.grn{background:var(--grn);color:#fff}
+.alert{border-inline-start:5px solid var(--org);border-radius:12px;background:var(--card);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);border-inline-end:1px solid var(--bd);padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer}
+.alert.r{border-inline-start-color:var(--red)}.alert.g{border-inline-start-color:var(--grn)}
+.alert small{color:var(--mut);display:block;font-size:13.5px}
+.empty{color:var(--mut);text-align:center;padding:18px 8px}
+.btn{border:0;border-radius:10px;padding:12px 14px;font:inherit;font-weight:700;background:var(--ink);color:#fff;cursor:pointer}
+.btn.sec{background:var(--soft);color:var(--tx);border:1px solid var(--bd)}
+.btn.y{background:var(--tag);color:var(--tagtx)}
+.btn.rd{background:var(--red);color:#fff}
+.btn.grnb{background:var(--grn);color:#fff}
+.btn.sm{padding:8px 12px;font-size:14px}
+.btn.big{width:100%;margin-top:12px;font-size:17px;padding:14px}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+input,select,textarea{width:100%;font:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx)}
+label{display:block;font-size:14px;color:var(--mut);margin:10px 2px 4px}
+.rowf{display:flex;gap:8px}.rowf>*{flex:1}.rowf>button{flex:none}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
+.chip{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:20px;padding:6px 14px;white-space:nowrap;font:inherit;font-size:14px;cursor:pointer}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bd);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom,0px);z-index:30}
+.nav button{background:none;border:0;padding:8px 2px 7px;font:inherit;font-size:12.5px;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:1px;position:relative;cursor:pointer}
+.nav button span{font-size:21px;line-height:1.2}
+.nav button.on{color:var(--tx);font-weight:700}
+.nav button.on::before{content:"";position:absolute;top:0;width:34px;height:4px;border-radius:0 0 4px 4px;background:var(--tag)}
+.nav i{position:absolute;top:4px;inset-inline-end:calc(50% - 24px);background:var(--red);color:#fff;font-style:normal;font-size:11px;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px}
+#fab{position:fixed;left:16px;bottom:calc(88px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:16px;background:var(--tag);color:var(--tagtx);border:0;font-size:30px;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.28);z-index:25;cursor:pointer}
+.back{position:fixed;inset:0;background:rgba(8,12,24,.55);z-index:50;display:none;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 14px calc(20px + env(safe-area-inset-bottom,0px))}
+.sheet h3{margin:0 0 4px;font-size:19px}
+.big-n{font-size:34px;font-weight:700;line-height:1.2}
+.line{display:grid;grid-template-columns:1fr auto 78px 30px;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
+.line small{color:var(--mut);display:block;font-size:12.5px}
+.qty{display:flex;align-items:center;gap:3px}
+.qty input{width:56px;text-align:center;padding:8px 2px}
+.qty button{width:32px;height:36px;border:1px solid var(--bd);background:var(--soft);color:var(--tx);border-radius:8px;font-size:18px;cursor:pointer}
+.line .pr{padding:8px 6px;text-align:center}
+.x{border:0;background:none;color:var(--red);font-size:18px;cursor:pointer}
+.tot{display:flex;justify-content:space-between;font-size:19px;padding:12px 2px 0}
+.hist{padding:9px 0;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;gap:10px}
+.hist small{color:var(--mut);display:block;font-size:12.5px}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;z-index:90;max-width:88%;text-align:center;display:none;border:1px solid var(--tag)}
+.note{font-size:13.5px;color:var(--mut);background:var(--soft);border:1px solid var(--bd);border-radius:10px;padding:9px 11px;margin:8px 0}
+@media(prefers-reduced-motion:no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--tag);outline-offset:1px}
+.lock{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.lock .box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px 18px;max-width:360px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.15)}
+.lock .big{font-size:46px;line-height:1}
+.lock h2{color:var(--tx);font-size:20px;margin:8px 0 2px}
+.lock p{color:var(--mut);font-size:14px;margin:0 0 12px}
+.lock label{text-align:right}
+.micbtn{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;width:48px;flex:none;font-size:20px;cursor:pointer}
+</style>
+</head>
+<body>
+<header><div><h1 id="hname">دروݣري محمد</h1><small id="hphone"></small></div><span class="tag" id="hdate"></span></header>
+<main id="view"></main>
+<button id="fab" aria-label="إضافة">+</button>
+<nav class="nav">
+  <button data-t="home"><span>🏠</span>الرئيسية<i id="b-home"></i></button>
+  <button data-t="prod"><span>📦</span>السلع<i id="b-prod"></i></button>
+  <button data-t="sell"><span>🧾</span>بيع</button>
+  <button data-t="debt"><span>📒</span>الديون<i id="b-debt"></i></button>
+  <button data-t="more"><span>⚙️</span>المزيد</button>
+</nav>
+<div class="back" id="back"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* ============ البيانات ============ */
+const KEY = 'drog_v1';
+const $ = s => document.querySelector(s);
+let S = load();
+function load() {
+  try { const d = JSON.parse(localStorage.getItem(KEY)); if (d && d.products) { d.sales = d.sales || []; d.moves = d.moves || []; d.custs = d.custs || []; d.notified = d.notified || {}; d.shop = d.shop || {}; return d; } } catch (e) {}
+  return { shop: { name: 'دروݣري محمد', phone: '0668-436479' }, products: [], moves: [], sales: [], custs: [], notified: {} };
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('⚠️ الذاكرة عامرة، دير نسخة احتياطية'); } }
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const n2 = v => Math.round((+v || 0) * 100) / 100;
+const fmt = v => n2(v).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' DH';
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+const p2 = n => String(n).padStart(2, '0');
+const fd = ts => { const d = new Date(ts); return DAYS[d.getDay()] + ' ' + p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear() + ' • ' + p2(d.getHours()) + ':' + p2(d.getMinutes()); };
+const dayKey = (t) => { const d = new Date(t || Date.now()); return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); };
+const prod = id => S.products.find(p => p.id === id);
+const cust = id => S.custs.find(c => c.id === id);
+const rem = c => n2(c.ledger.reduce((a, l) => a + (l.t === 'debt' ? l.amt : -l.amt), 0));
+const totalDebt = () => S.custs.reduce((a, c) => a + Math.max(0, rem(c)), 0);
+function debtSince(c) { let run = 0, since = 0; [...c.ledger].sort((a, b) => a.ts - b.ts).forEach(l => { run = n2(run + (l.t === 'debt' ? l.amt : -l.amt)); if (run > 0 && !since) since = l.ts; }); return since; }
+function lateTxt(ts) { if (!ts) return ''; const days = Math.floor((Date.now() - ts) / 864e5); if (days < 1) return ''; const m = Math.floor(days / 30), d = days % 30; let s = m === 1 ? 'شهر' : m === 2 ? 'شهرين' : m >= 3 ? m + ' أشهر' : ''; if (d) s += (s ? ' و' : '') + d + ' يوم'; return '⏳ الكريدي من ' + s + ' (متأخر)'; }
+function toast(m) { const t = $('#toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(toast.h); toast.h = setTimeout(() => t.style.display = 'none', 2600); }
+
+/* ============ التنبيهات ============ */
+function effDay(c) { const d = new Date(); const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); return Math.min(c.dueDay || 1, last); }
+function isDue(c) { return rem(c) > 0 && new Date().getDate() >= effDay(c); }
+function alerts() {
+  const stock = S.products.filter(p => p.qty <= (p.min || 0)).sort((a, b) => a.qty - b.qty);
+  const exp = S.products.filter(p => p.exp).map(p => ({ p, d: Math.ceil((new Date(p.exp + 'T23:59:59') - new Date()) / 864e5) })).filter(x => x.d <= 30).sort((a, b) => a.d - b.d);
+  const due = S.custs.filter(isDue).sort((a, b) => rem(b) - rem(a));
+  return { stock, exp, due };
+}
+function speak(t) { try { if (!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(t); u.lang = 'ar-MA'; u.rate = 0.95; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
+async function notify(title, body, tag) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
+    const o = { body, tag, icon: 'icon-192.png', badge: 'icon-192.png', dir: 'rtl', lang: 'ar', vibrate: [200, 100, 200] };
+    if (reg) reg.showNotification(title, o); else new Notification(title, o);
+  } catch (e) {}
+}
+function checkAlerts() {
+  const a = alerts(), d = dayKey(); let ch = false;
+  const once = (k, fn) => { if (!S.notified[k + '@' + d]) { S.notified[k + '@' + d] = 1; ch = true; fn(); } };
+  a.stock.forEach(p => once('s' + p.id, () => { notify(p.qty <= 0 ? '⚠️ السلعة سالات: ' + p.name : '📉 قاربت تسالي: ' + p.name, 'بقى ' + n2(p.qty) + ' ' + p.unit + ' فقط. خاصك تجيبها.', 's' + p.id); speak(p.qty <= 0 ? 'خاصك تزيد ' + p.name + '. سالات من الخزينة.' : 'قارب يسالي ' + p.name + '. بقى غير ' + n2(p.qty) + ' ' + p.unit + '.'); }));
+  a.exp.forEach(x => once('e' + x.p.id, () => { notify('⏳ صلاحية قاربت: ' + x.p.name, x.d < 0 ? 'سالات الصلاحية!' : 'بقاو ' + x.d + ' يوم.', 'e' + x.p.id); speak(x.d < 0 ? 'سالات الصلاحية ديال ' + x.p.name : 'قاربت تسالي الصلاحية ديال ' + x.p.name + '. بقاو ' + x.d + ' يوم.'); }));
+  a.due.forEach(c => once('d' + c.id, () => { notify('📒 الشهر خلص: ' + c.name, 'خاصو يخلص. الباقي: ' + fmt(rem(c)), 'd' + c.id); speak('الشهر خلص. خاص ' + c.name + ' يخلص. الباقي ' + fmt(rem(c)) + '.'); }));
+  Object.keys(S.notified).forEach(k => { if (!k.endsWith('@' + d)) { delete S.notified[k]; ch = true; } });
+  if (ch) save();
+  badges(a);
+}
+function badges(a) {
+  a = a || alerts();
+  const set = (id, n) => { const e = $('#' + id); e.textContent = n; e.style.display = n ? 'flex' : 'none'; };
+  set('b-home', a.stock.length + a.exp.length + a.due.length); set('b-prod', a.stock.length); set('b-debt', a.due.length);
+}
+
+/* ============ الواجهة العامة ============ */
+let tab = 'home', Q = { prod: '', debt: '' }, catF = '', debtF = 'all', cart = [], paidIn = '', sellCust = '';
+function render() {
+  $('#hname').textContent = S.shop.name || 'الدروݣري';
+  $('#hphone').textContent = S.shop.phone || '';
+  const dn = new Date(); $('#hdate').textContent = DAYS[dn.getDay()] + ' ' + p2(dn.getDate()) + '/' + p2(dn.getMonth() + 1);
+  $('#view').innerHTML = ({ home, prod: prodView, sell: sellView, debt: debtView, more: moreView })[tab]();
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
+  const f = $('#fab'); f.style.display = (tab === 'prod' || tab === 'debt') ? 'flex' : 'none';
+  f.onclick = tab === 'prod' ? () => prodForm() : () => custForm();
+  if (tab === 'sell') { renderCart(); }
+  badges();
+}
+function go(t) { tab = t; render(); window.scrollTo(0, 0); }
+document.querySelectorAll('.nav button').forEach(b => b.onclick = () => go(b.dataset.t));
+function sheet(html) { $('#sheet').innerHTML = html; $('#back').style.display = 'flex'; }
+function closeSheet() { $('#back').style.display = 'none'; }
+$('#back').onclick = e => { if (e.target.id === 'back') closeSheet(); };
+const val = id => $('#' + id).value;
+
+/* ============ القفل ============ */
+const LKEY = 'drog_lock';
+let LOCK = null;
+try { LOCK = JSON.parse(localStorage.getItem(LKEY) || 'null'); } catch (e) {}
+function lockHTML(setup) {
+  return `<div class="lock" id="lockScr"><div class="box"><div class="big">🔐</div><h2>${setup ? 'عيّن الحماية ديال التطبيق' : 'التطبيق محمي'}</h2><p>${setup ? 'هاد المعلومات خاصها تكون ديالك نتا بوحدك (صاحب الدروݣري). حفظهم مزيان وما تنساهمش.' : 'ما كيفتحو غير صاحب الدروݣري. دخل رقمك والكود ديالك.'}</p>
+  <label>رقم الهاتف ديالك</label><input id="lk-phone" type="tel" inputmode="tel" placeholder="06..." autocomplete="off">
+  <label>الكود السري</label><input id="lk-code" type="password" inputmode="numeric" maxlength="8" placeholder="****" autocomplete="off">
+  <button class="btn big" style="margin-top:14px" onclick="tryLock(${setup ? 'true' : 'false'})">🔓 دخول</button></div></div>`;
+}
+function showLock() {
+  document.body.insertAdjacentHTML('beforeend', lockHTML(!LOCK));
+  if (!LOCK) { $('#lk-phone').value = '0668436479'; $('#lk-code').value = '19821'; }
+}
+function tryLock(setup) {
+  const ph = ($('#lk-phone').value || '').replace(/\D/g, ''), cd = $('#lk-code').value.trim();
+  if (ph.length < 9) return toast('كتب رقم الهاتف كامل');
+  if (cd.length < 4) return toast('الكود خاصو يكون 4 أرقام على الأقل');
+  if (setup) { LOCK = { phone: ph, code: cd }; localStorage.setItem(LKEY, JSON.stringify(LOCK)); $('#lockScr').remove(); toast('تعيّنت الحماية ✅'); return; }
+  if (LOCK && ph === LOCK.phone && cd === LOCK.code) { $('#lockScr').remove(); }
+  else toast('❌ رقم الهاتف أو الكود غالطين');
+}
+function chgLock() { LOCK = null; localStorage.removeItem(LKEY); showLock(); window.scrollTo(0, 0); }
+
+/* ============ البحث الصوتي ============ */
+function startVoice(tid) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return toast('البحث الصوتي ما كيدعمش فهاد المتصفح (جرب Chrome)');
+  try {
+    const r = new SR(); r.lang = 'ar-MA'; r.interimResults = false;
+    r.onresult = e => { const t = e.results[0][0].transcript, el = $('#' + tid); el.value = t; el.dispatchEvent(new Event('input', { bubbles: true })); toast('🎤 سمعت: ' + t); };
+    r.onerror = () => toast('ما سمعتش مزيان، عاود. غالبا خاص الإنترنت.');
+    r.start(); toast('🎤 هضر دابا...');
+  } catch (e) { toast('تعذر تشغيل الميكروفون'); }
+}
+
+/* ============ الرئيسية ============ */
+function todayStats() {
+  const k = dayKey(); let sales = 0, profit = 0, cash = 0;
+  S.sales.filter(s => dayKey(s.ts) === k).forEach(s => { sales += s.total; cash += s.paid; s.lines.forEach(l => profit += (l.price - l.buy) * l.qty); });
+  S.custs.forEach(c => c.ledger.forEach(l => { if (l.t === 'pay' && dayKey(l.ts) === k) cash += l.amt; }));
+  return { sales, profit, cash };
+}
+function monthStats() { const k = dayKey().slice(0, 7); let sales = 0, profit = 0; S.sales.filter(s => dayKey(s.ts).slice(0, 7) === k).forEach(s => { sales += s.total; s.lines.forEach(l => profit += (l.price - l.buy) * l.qty); }); return { sales, profit }; }
+function home() {
+  const t = todayStats(), mo = monthStats(), a = alerts();
+  let h = `<div class="grid2">
+  <div class="stat"><small>مبيعات اليوم</small><b>${fmt(t.sales)}</b></div>
+  <div class="stat"><small>ربح اليوم</small><b class="grn">${fmt(t.profit)}</b></div>
+  <div class="stat"><small>اللي تقبض اليوم</small><b>${fmt(t.cash)}</b></div>
+  <div class="stat"><small>مبيعات الشهر</small><b>${fmt(mo.sales)}</b></div>
+  <div class="stat"><small>ربح الشهر</small><b class="grn">${fmt(mo.profit)}</b></div>
+  <div class="stat"><small>عدد المنتجات</small><b>${S.products.length}</b></div>
+  <div class="stat"><small>مجموع الديون</small><b class="red">${fmt(totalDebt())}</b></div></div>`;
+  const dim = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+  h += `<div class="note">🕐 المدخول اليومي كيتجدد بوحدو كل 24 ساعة، والشهري كيبقى محفوظ حتى آخر الشهر (باقي ${dim - new Date().getDate()} يوم). بلا ما تدير والو.</div>`;
+  if ('Notification' in window && Notification.permission === 'default') h += `<div class="note">فعّل الإشعارات باش يوصلك تنبيه ملي سلعة تسالي أو الشهر ديال الزبون يخلص. <button class="btn sm y" style="margin-top:8px" onclick="askNotif()">🔔 تفعيل الإشعارات</button></div>`;
+  h += '<h2>⚠️ سلع سالات أو قاربت تسالي</h2>';
+  h += a.stock.length ? a.stock.map(p => `<div class="alert ${p.qty <= 0 ? 'r' : ''}" onclick="openProd('${p.id}')"><div><b>${esc(p.name)}</b><small>${p.qty <= 0 ? 'سالات، خاصك تجيبها' : 'قاربت تسالي (الحد: ' + n2(p.min) + ')'}</small></div><span class="badge ${p.qty <= 0 ? 'red' : 'org'}">${n2(p.qty)} ${esc(p.unit)}</span></div>`).join('') + `<button class="btn sec big" style="margin-top:4px" onclick="shareBuy()">📤 بعث لائحة المشتريات (واتساب)</button>` : '<div class="empty">كلشي مزيان، ما كاين حتى سلعة سالات ✅</div>';
+  h += '<h2>📒 زبناء الشهر ديالهم خلص</h2>';
+  h += a.due.length ? a.due.map(c => `<div class="alert r" onclick="openCust('${c.id}')"><div><b>${esc(c.name)}</b><small>خاصو يخلص • يوم ${c.dueDay} من كل شهر</small></div><span class="badge red">${fmt(rem(c))}</span></div>`).join('') : '<div class="empty">ما كاين حتى واحد خاصو يخلص دابا ✅</div>';
+  if (a.exp.length) { h += '<h2>⏳ الصلاحية</h2>' + a.exp.map(x => `<div class="alert ${x.d < 0 ? 'r' : ''}" onclick="openProd('${x.p.id}')"><div><b>${esc(x.p.name)}</b><small>${x.d < 0 ? 'سالات الصلاحية' : 'بقاو ' + x.d + ' يوم'}</small></div><span class="badge org">${esc(x.p.exp)}</span></div>`).join(''); }
+  return h;
+}
+function shareBuy() {
+  const L = alerts().stock; if (!L.length) return;
+  const t = '🛒 لائحة المشتريات - ' + (S.shop.name || '') + '\n' + L.map(p => '• ' + p.name + ' (بقى ' + n2(p.qty) + ' ' + p.unit + ')').join('\n');
+  window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank');
+}
+
+/* ============ السلع ============ */
+const UNITS = ['قطعة', 'كلغ', 'لتر', 'علبة', 'متر', 'كيس', 'بوطة'];
+const cats = () => [...new Set(['منظفات', 'صباغة', 'أدوات', 'كهرباء', 'سباكة', ...S.products.map(p => p.cat).filter(Boolean)])];
+const stockCls = p => p.qty <= 0 ? 'red' : p.qty <= (p.min || 0) ? 'org' : 'grn';
+function prodView() {
+  return `<div class="rowf"><input id="pq" type="search" placeholder="🔎 قلب على سلعة (بالكتابة أو بالصوت)..." value="${esc(Q.prod)}" oninput="Q.prod=this.value;$('#plist').innerHTML=prodList()" style="flex:1"><button class="micbtn" onclick="startVoice('pq')" aria-label="بحث صوتي">🎤</button></div>
+  <div class="chips"><button class="chip ${catF === '' ? 'on' : ''}" onclick="catF='';render()">الكل</button>${[...new Set(S.products.map(p => p.cat).filter(Boolean))].map(c => `<button class="chip ${catF === c ? 'on' : ''}" onclick="catF=this.dataset.c;render()" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+  <div id="plist">${prodList()}</div>`;
+}
+function prodList() {
+  const q = Q.prod.trim().toLowerCase();
+  const L = S.products.filter(p => (!catF || p.cat === catF) && (!q || (p.name + ' ' + (p.cat || '') + ' ' + (p.code || '')).toLowerCase().includes(q))).sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+  if (!L.length) return '<div class="empty">' + (S.products.length ? 'ما لقينا والو.' : 'ما زال ما كاين حتى سلعة. ضغط على + باش تزيد.') + '</div>';
+  return L.map(p => `<div class="item" onclick="openProd('${p.id}')"><div><b>${esc(p.name)}</b><small>${esc(p.cat || 'بدون صنف')}${p.code ? ' • كود: ' + esc(p.code) : ''} • ${fmt(p.sell)}</small></div><span class="badge ${stockCls(p)}">${n2(p.qty)} ${esc(p.unit)}</span></div>`).join('');
+}
+function openProd(id) {
+  const p = prod(id); if (!p) return;
+  speak(p.name);
+  const soldQ = n2(S.sales.reduce((a, s) => a + s.lines.filter(l => l.pid === id).reduce((x, l) => x + l.qty, 0), 0));
+  const hs = [];
+  S.moves.filter(m => m.pid === id).forEach(m => hs.push({ ts: m.ts, txt: m.type === 'in' ? '➕ دخلت ' + n2(m.qty) : '✏️ تصحيح الكمية إلى ' + n2(m.qty), sub: '' }));
+  S.sales.forEach(s => s.lines.filter(l => l.pid === id).forEach(l => hs.push({ ts: s.ts, txt: '➖ بيع ' + n2(l.qty) + ' × ' + fmt(l.price) + (l.nego ? ' (تفاوض)' : ''), sub: s.cid && cust(s.cid) ? 'كريدي: ' + cust(s.cid).name : '' })));
+  hs.sort((a, b) => b.ts - a.ts);
+  sheet(`<h3>${esc(p.name)}</h3><small style="color:var(--mut)">${esc(p.cat || 'بدون صنف')}</small>
+  <div class="card" style="margin-top:10px"><div style="color:var(--mut)">بقى فالمخزن</div><div class="big-n ${stockCls(p)}">${n2(p.qty)} ${esc(p.unit)}</div>
+  <small style="color:var(--mut)">تنبيه ملي تنقص على: ${n2(p.min)} • الشراء: ${fmt(p.buy)} • البيع: ${fmt(p.sell)}${p.nego ? ' • التفاوض حتى: ' + fmt(p.nego) : ''}${p.code ? ' • الكود: ' + esc(p.code) : ''}${p.exp ? ' • الصلاحية: ' + esc(p.exp) : ''}</small>
+  <div class="grid2" style="margin-top:10px"><div class="stat"><small>تباع (مجموع)</small><b>${soldQ} ${esc(p.unit)}</b></div><div class="stat"><small>دخل المخزن</small><b>${n2(soldQ + p.qty)} ${esc(p.unit)}</b></div></div></div>
+  <div class="btns"><button class="btn grnb" onclick="stockForm('${id}')">➕ دخلت سلعة</button><button class="btn y" onclick="sellProd('${id}')">🧾 بيع</button>
+  <button class="btn sec" onclick="prodForm('${id}')">✏️ تعديل</button><button class="btn sec" style="color:var(--red)" onclick="delProd('${id}')">🗑 مسح</button></div>
+  <h2>آخر الحركات</h2>${hs.slice(0, 12).map(h => `<div class="hist"><div>${h.txt}<small>${h.sub}</small></div><small>${fd(h.ts)}</small></div>`).join('') || '<div class="empty">ما كاين حتى حركة.</div>'}
+  <button class="btn sec big" onclick="closeSheet()">إغلاق</button>`);
+}
+function prodForm(id) {
+  const p = id ? prod(id) : { name: '', cat: '', qty: '', unit: 'قطعة', buy: '', sell: '', min: 3, exp: '', code: '', nego: '' };
+  sheet(`<h3>${id ? 'تعديل السلعة' : 'سلعة جديدة'}</h3>
+  <label>اسم السلعة (بالكتابة أو بالصوت 🎤)</label><div class="rowf"><input id="f-name" value="${esc(p.name)}" placeholder="مثلا: صابون جافيل" style="flex:1"><button class="micbtn" onclick="startVoice('f-name')" aria-label="إدخال صوتي">🎤</button></div>
+  <label>الصنف</label><input id="f-cat" list="cl" value="${esc(p.cat)}" placeholder="منظفات، صباغة، أدوات..."><datalist id="cl">${cats().map(c => `<option value="${esc(c)}">`).join('')}</datalist>
+  <div class="rowf"><div><label>الكمية</label><input id="f-qty" type="number" inputmode="decimal" step="any" value="${p.qty}"></div>
+  <div><label>الوحدة</label><select id="f-unit">${UNITS.map(u => `<option ${u === p.unit ? 'selected' : ''}>${u}</option>`).join('')}</select></div></div>
+  <div class="rowf"><div><label>ثمن الشراء</label><input id="f-buy" type="number" inputmode="decimal" step="any" value="${p.buy}"></div>
+  <div><label>ثمن البيع</label><input id="f-sell" type="number" inputmode="decimal" step="any" value="${p.sell}"></div></div>
+  <label>كود المنتوج (رقم أو باركود - اختياري)</label><input id="f-code" value="${esc(p.code || '')}" placeholder="مثلا: 10234">
+  <label>ثمن التفاوض (أدنى ثمن كتقبل تبيع به - اختياري)</label><input id="f-nego" type="number" inputmode="decimal" step="any" value="${p.nego || ''}" placeholder="مثلا: باعو بـ 5 والتفاوض حتى 4">
+  <label>نبهني ملي تنقص الكمية على</label><input id="f-min" type="number" inputmode="decimal" step="any" value="${p.min}">
+  <label>تاريخ الصلاحية (اختياري)</label><input id="f-exp" type="date" value="${esc(p.exp || '')}">
+  <button class="btn big" onclick="saveProd('${id || ''}')">💾 حفظ</button><button class="btn sec big" onclick="${id ? "openProd('" + id + "')" : 'closeSheet()'}">إلغاء</button>`);
+}
+function saveProd(id) {
+  const name = val('f-name').trim(); if (!name) return toast('كتب اسم السلعة');
+  const d = { name, cat: val('f-cat').trim(), qty: n2(val('f-qty')), unit: val('f-unit'), buy: n2(val('f-buy')), sell: n2(val('f-sell')), min: n2(val('f-min')), exp: val('f-exp'), code: val('f-code').trim(), nego: n2(val('f-nego')) };
+  if (id) { const p = prod(id); if (p.qty !== d.qty) S.moves.push({ id: uid(), pid: id, type: 'adj', qty: d.qty, ts: Date.now() }); Object.assign(p, d); }
+  else S.products.push(Object.assign({ id: uid(), created: Date.now() }, d));
+  save(); closeSheet(); toast('تسجلات السلعة ✅'); render(); checkAlerts();
+}
+function stockForm(id) {
+  const p = prod(id);
+  sheet(`<h3>دخلت سلعة: ${esc(p.name)}</h3><div class="note">الكمية الحالية: ${n2(p.qty)} ${esc(p.unit)}</div>
+  <label>الكمية اللي دخلات</label><input id="s-qty" type="number" inputmode="decimal" step="any" autofocus>
+  <label>ثمن الشراء الجديد (اختياري)</label><input id="s-buy" type="number" inputmode="decimal" step="any" value="${p.buy}">
+  <button class="btn big" onclick="doStock('${id}')">✅ زيد للمخزن</button><button class="btn sec big" onclick="openProd('${id}')">إلغاء</button>`);
+}
+function doStock(id) {
+  const q = n2(val('s-qty')); if (q <= 0) return toast('كتب الكمية');
+  const p = prod(id), b = n2(val('s-buy')); p.qty = n2(p.qty + q); if (b > 0) p.buy = b;
+  S.moves.push({ id: uid(), pid: id, type: 'in', qty: q, buy: b, ts: Date.now() });
+  save(); toast('الكمية الجديدة: ' + n2(p.qty) + ' ' + p.unit); openProd(id); render(); checkAlerts();
+}
+function delProd(id) { const p = prod(id); if (!confirm('تمسح "' + p.name + '" نهائيا؟')) return; S.products = S.products.filter(x => x.id !== id); save(); closeSheet(); render(); }
+
+/* ============ البيع ============ */
+function sellProd(id) { closeSheet(); tab = 'sell'; render(); addCart(id); }
+function sellView() {
+  return `<div class="rowf"><input id="sq" type="search" placeholder="🔎 قلب على السلعة (بالكتابة أو بالصوت)..." oninput="sellSearch(this.value)" autocomplete="off" style="flex:1"><button class="micbtn" onclick="startVoice('sq')" aria-label="بحث صوتي">🎤</button></div>
+  <div id="sres"></div><h2>🧺 السلة</h2><div class="card" id="cartBox"></div>`;
+}
+function sellSearch(q) {
+  q = q.trim().toLowerCase(); const el = $('#sres');
+  if (!q) { el.innerHTML = ''; return; }
+  const L = S.products.filter(p => (p.name + ' ' + (p.cat || '')).toLowerCase().includes(q)).slice(0, 8);
+  el.innerHTML = L.length ? L.map(p => `<div class="item" onclick="addCart('${p.id}')"><div><b>${esc(p.name)}</b><small>${fmt(p.sell)}</small></div><span class="badge ${stockCls(p)}">${n2(p.qty)} ${esc(p.unit)}</span></div>`).join('') : '<div class="empty">ما كاين هاد السلعة. زيدها من تبويب السلع.</div>';
+}
+function addCart(id) {
+  const p = prod(id); if (!p) return;
+  const l = cart.find(x => x.pid === id); if (l) l.qty = n2(l.qty + 1); else cart.push({ pid: id, qty: 1, price: p.sell });
+  const sq = $('#sq'); if (sq) sq.value = ''; const sr = $('#sres'); if (sr) sr.innerHTML = '';
+  renderCart(); toast('تزادت: ' + p.name);
+}
+const cartTotal = () => n2(cart.reduce((a, l) => a + l.qty * l.price, 0));
+function renderCart() { const el = $('#cartBox'); if (!el) return; el.innerHTML = cartHtml(); recalc(); }
+function cartHtml() {
+  if (!cart.length) return '<div class="empty">السلة خاوية. قلب على سلعة من فوق.</div>';
+  const rows = cart.map((l, i) => { const p = prod(l.pid); return `<div class="line"><div><b>${esc(p.name)}</b><small>بقى ${n2(p.qty)} ${esc(p.unit)}${p.nego ? ' • تفاوض حتى ' + fmt(p.nego) : ''}</small></div>
+  <div class="qty"><button onclick="cq(${i},-1)">−</button><input type="number" inputmode="decimal" step="any" value="${l.qty}" oninput="cs(${i},'qty',this.value)"><button onclick="cq(${i},1)">+</button></div>
+  <input class="pr" type="number" inputmode="decimal" step="any" value="${l.price}" oninput="cs(${i},'price',this.value)" aria-label="الثمن"><button class="x" onclick="cd(${i})" aria-label="حيد">✕</button></div>`; }).join('');
+  return rows + `<div class="tot"><span>المجموع</span><b id="tot"></b></div>
+  <label>شحال خلص الزبون؟ (خليه خاوي إلا خلص كلشي)</label><input id="paid" type="number" inputmode="decimal" step="any" value="${esc(paidIn)}" oninput="paidIn=this.value;recalc()">
+  <div id="remBox"></div>
+  <label>الزبون (ضروري إلا بقى شي كريدي)</label>
+  <div class="rowf"><select id="scust" onchange="sellCust=this.value"><option value="">— بدون زبون —</option>${S.custs.map(c => `<option value="${c.id}" ${c.id === sellCust ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select><button class="btn sm sec" onclick="custForm(null,true)">➕ جديد</button></div>
+  <button class="btn big y" onclick="checkout()">✅ تسجيل البيع</button>`;
+}
+function cq(i, d) { cart[i].qty = Math.max(0, n2(cart[i].qty + d)); renderCart(); }
+function cs(i, k, v) { cart[i][k] = +v || 0; recalc(); }
+function cd(i) { cart.splice(i, 1); renderCart(); }
+function recalc() {
+  const t = $('#tot'); if (!t) return; const total = cartTotal(); t.textContent = fmt(total);
+  const paid = paidIn === '' ? total : +paidIn || 0; const r = n2(total - paid);
+  $('#remBox').innerHTML = r > 0 ? `<div class="note">الباقي كريدي على الزبون: <b class="red">${fmt(r)}</b></div>` : '';
+  $('#paid').placeholder = n2(total);
+}
+function checkout() {
+  cart = cart.filter(l => l.qty > 0); if (!cart.length) return toast('السلة خاوية');
+  const total = cartTotal(); let paid = paidIn === '' ? total : n2(paidIn); if (paid > total) paid = total; if (paid < 0) paid = 0;
+  const r = n2(total - paid), cid = sellCust || '';
+  if (r > 0 && !cid) return toast('اختار الزبون باش نسجلو الكريدي');
+  for (const l of cart) { const p = prod(l.pid); if (p.qty < l.qty && !confirm('في المخزن ' + n2(p.qty) + ' ' + p.unit + ' فقط من "' + p.name + '". نكمل؟')) return; }
+  const ts = Date.now(), lines = cart.map(l => { const p = prod(l.pid); p.qty = n2(p.qty - l.qty); return { pid: p.id, name: p.name, qty: l.qty, price: l.price, buy: p.buy || 0, nego: l.price < p.sell ? 1 : 0 }; });
+  S.sales.push({ id: uid(), ts, lines, total, paid, cid: r > 0 ? cid : '' });
+  if (r > 0) cust(cid).ledger.push({ id: uid(), t: 'debt', amt: r, note: 'مشتريات: ' + lines.map(l => l.name + ' ×' + l.qty).join('، '), ts });
+  save(); cart = []; paidIn = ''; sellCust = ''; toast('تسجل البيع ✅ ' + fmt(total)); render(); checkAlerts();
+}
+
+/* ============ الديون ============ */
+function debtView() {
+  const chip = (k, t) => `<button class="chip ${debtF === k ? 'on' : ''}" onclick="debtF='${k}';render()">${t}</button>`;
+  return `<div class="stat" style="margin-bottom:10px"><small>مجموع اللي خاصهم يخلصوك</small><b class="red">${fmt(totalDebt())}</b></div>
+  <input type="search" placeholder="🔎 قلب على زبون..." value="${esc(Q.debt)}" oninput="Q.debt=this.value;$('#dlist').innerHTML=debtList()">
+  <div class="chips">${chip('all', 'الكل')}${chip('owe', 'عليهم دين')}${chip('clear', 'خالصين')}</div><div id="dlist">${debtList()}</div>`;
+}
+function debtList() {
+  const q = Q.debt.trim().toLowerCase();
+  const L = S.custs.filter(c => (!q || c.name.toLowerCase().includes(q)) && (debtF === 'all' || (debtF === 'owe' ? rem(c) > 0 : rem(c) <= 0)))
+    .sort((a, b) => (isDue(b) - isDue(a)) || (rem(b) - rem(a)));
+  if (!L.length) return '<div class="empty">' + (S.custs.length ? 'ما لقينا والو.' : 'ما زال ما كاين حتى زبون. ضغط على + باش تزيد.') + '</div>';
+  return L.map(c => { const r = rem(c), lt = r > 0 ? lateTxt(debtSince(c)) : ''; return `<div class="item" onclick="openCust('${c.id}')"><div><b>${esc(c.name)}</b><small>${lt ? lt + ' • ' : ''}${r > 0 ? (isDue(c) ? '⚠️ الشهر خلص، خاصو يخلص' : 'التذكير: يوم ' + c.dueDay + ' من كل شهر') : 'خالص ✅'}</small></div><span class="badge ${r > 0 ? 'red' : 'grn'}">${r > 0 ? fmt(r) : '0 DH'}</span></div>`; }).join('');
+}
+function openCust(id) {
+  const c = cust(id); if (!c) return; const r = rem(c); let run = 0;
+  const rows = [...c.ledger].sort((a, b) => a.ts - b.ts).map(l => { run = n2(run + (l.t === 'debt' ? l.amt : -l.amt)); return { l, run }; }).reverse();
+  sheet(`<h3>${esc(c.name)}</h3><small style="color:var(--mut);direction:ltr;display:block;text-align:right">${esc(c.phone || '')}</small>
+  <div class="card" style="margin-top:10px"><div style="color:var(--mut)">الباقي</div><div class="big-n ${r > 0 ? 'red' : 'grn'}">${fmt(Math.max(0, r))}</div>
+  <small style="color:var(--mut)">${r > 0 ? (lateTxt(debtSince(c)) ? lateTxt(debtSince(c)) + ' • ' : '') + (isDue(c) ? '⚠️ الشهر خلص، خاصو يخلص' : 'التذكير الشهري: يوم ' + c.dueDay) : 'خالص ✅'}</small></div>
+  <div class="btns"><button class="btn grnb" onclick="payForm('${id}')">💵 خلص</button><button class="btn y" onclick="debtForm('${id}')">➕ دين جديد</button>
+  <button class="btn sec" onclick="remindWa('${id}')">💬 ذكّرو (واتساب)</button>${c.phone ? `<a class="btn sec" style="text-align:center;text-decoration:none" href="tel:${esc(c.phone)}">📞 اتصل</a>` : '<span></span>'}
+  <button class="btn sec" onclick="custForm('${id}')">✏️ تعديل</button><button class="btn sec" style="color:var(--red)" onclick="delCust('${id}')">🗑 مسح</button></div>
+  <h2>السجل</h2>${rows.map(({ l, run }) => `<div class="hist"><div>${l.t === 'debt' ? '➕ دين' : '💵 خلص'} <b class="${l.t === 'debt' ? 'red' : 'grn'}">${fmt(l.amt)}</b><small>${esc(l.note || '')}</small><small>الباقي بعدها: ${fmt(run)}</small></div><small>${fd(l.ts)}</small></div>`).join('') || '<div class="empty">ما كاين حتى حركة.</div>'}
+  <button class="btn sec big" onclick="closeSheet()">إغلاق</button>`);
+}
+function custForm(id, fromSell) {
+  const c = id ? cust(id) : { name: '', phone: '', dueDay: new Date().getDate() };
+  sheet(`<h3>${id ? 'تعديل الزبون' : 'زبون جديد'}</h3>
+  <label>الاسم</label><input id="c-name" value="${esc(c.name)}">
+  <label>رقم الهاتف</label><input id="c-phone" type="tel" inputmode="tel" value="${esc(c.phone)}" placeholder="06...">
+  <label>التذكير الشهري: يوم (1 إلى 31) من كل شهر</label><input id="c-day" type="number" inputmode="numeric" min="1" max="31" value="${c.dueDay}">
+  ${id ? '' : `<label>دين ديال البداية (اختياري)</label><input id="c-amt" type="number" inputmode="decimal" step="any"><label>ملاحظة</label><input id="c-note" placeholder="مثلا: سلعة قديمة">`}
+  <button class="btn big" onclick="saveCust('${id || ''}',${fromSell ? 'true' : 'false'})">💾 حفظ</button><button class="btn sec big" onclick="${id ? "openCust('" + id + "')" : 'closeSheet()'}">إلغاء</button>`);
+}
+function saveCust(id, fromSell) {
+  const name = val('c-name').trim(); if (!name) return toast('كتب اسم الزبون');
+  const day = Math.min(31, Math.max(1, parseInt(val('c-day')) || 1));
+  if (id) { Object.assign(cust(id), { name, phone: val('c-phone').trim(), dueDay: day }); save(); toast('تسجل ✅'); openCust(id); render(); return; }
+  const c = { id: uid(), name, phone: val('c-phone').trim(), dueDay: day, ledger: [] }, a = n2(val('c-amt'));
+  if (a > 0) c.ledger.push({ id: uid(), t: 'debt', amt: a, note: val('c-note').trim() || 'دين ديال البداية', ts: Date.now() });
+  S.custs.push(c); save(); closeSheet(); toast('تزاد الزبون ✅');
+  if (fromSell) { sellCust = c.id; }
+  render(); checkAlerts();
+}
+function debtForm(id) {
+  const c = cust(id);
+  sheet(`<h3>دين جديد: ${esc(c.name)}</h3><div class="note">الباقي دابا: ${fmt(rem(c))}</div>
+  <label>المبلغ</label><input id="d-amt" type="number" inputmode="decimal" step="any" autofocus><label>ملاحظة (السلعة...)</label><input id="d-note">
+  <button class="btn big" onclick="doDebt('${id}')">➕ سجل الدين</button><button class="btn sec big" onclick="openCust('${id}')">إلغاء</button>`);
+}
+function doDebt(id) {
+  const a = n2(val('d-amt')); if (a <= 0) return toast('كتب المبلغ');
+  cust(id).ledger.push({ id: uid(), t: 'debt', amt: a, note: val('d-note').trim(), ts: Date.now() });
+  save(); toast('الباقي: ' + fmt(rem(cust(id)))); openCust(id); render(); checkAlerts();
+}
+function payForm(id) {
+  const c = cust(id), r = rem(c);
+  sheet(`<h3>خلص: ${esc(c.name)}</h3><div class="note">الباقي قبل الخلاص: <b class="red">${fmt(r)}</b></div>
+  <label>شحال خلص الآن؟</label><input id="p-amt" type="number" inputmode="decimal" step="any" autofocus oninput="payPrev('${id}')">
+  <div id="p-prev" class="note" style="display:none"></div><label>ملاحظة (اختياري)</label><input id="p-note">
+  <div class="note">الوقت والنهار والساعة كيتسجلو بوحدهم.</div>
+  <button class="btn big grnb" onclick="doPay('${id}')">💵 سجل الخلاص</button><button class="btn sec big" onclick="openCust('${id}')">إلغاء</button>`);
+}
+function payPrev(id) { const a = n2(val('p-amt')), el = $('#p-prev'); el.style.display = a > 0 ? 'block' : 'none'; el.innerHTML = 'غيبقى عليه: <b>' + fmt(Math.max(0, rem(cust(id)) - a)) + '</b>'; }
+function doPay(id) {
+  const c = cust(id), a = n2(val('p-amt')); if (a <= 0) return toast('كتب المبلغ');
+  if (a > rem(c) && !confirm('المبلغ أكبر من الباقي (' + fmt(rem(c)) + '). نكمل؟')) return;
+  c.ledger.push({ id: uid(), t: 'pay', amt: a, note: val('p-note').trim(), ts: Date.now() });
+  save(); toast('تسجل الخلاص ✅ الباقي: ' + fmt(Math.max(0, rem(c)))); openCust(id); render(); checkAlerts();
+}
+function remindWa(id) {
+  const c = cust(id); let n = (c.phone || '').replace(/\D/g, ''); if (n.startsWith('0')) n = '212' + n.slice(1);
+  const t = 'السلام عليكم ' + c.name + '، تذكير من ' + (S.shop.name || '') + ': الباقي عليك ' + fmt(Math.max(0, rem(c))) + '. المرجو التسوية. شكرا 🙏' + (S.shop.phone ? '\n' + S.shop.phone : '');
+  window.open('https://wa.me/' + n + '?text=' + encodeURIComponent(t), '_blank');
+}
+function delCust(id) { const c = cust(id); if (!confirm('تمسح "' + c.name + '" مع السجل ديالو؟' + (rem(c) > 0 ? '\nباقي عليه ' + fmt(rem(c)) : ''))) return; S.custs = S.custs.filter(x => x.id !== id); save(); closeSheet(); render(); }
+
+/* ============ المزيد ============ */
+let installEv = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEv = e; });
+function moreView() {
+  const since = Date.now() - 30 * 864e5, m = {};
+  S.sales.filter(s => s.ts >= since).forEach(s => s.lines.forEach(l => m[l.name] = (m[l.name] || 0) + l.qty));
+  const top = Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const perm = 'Notification' in window ? Notification.permission : 'unsupported';
+  return `<h2>🏪 معلومات المحل</h2><div class="card"><label style="margin-top:0">اسم المحل</label><input value="${esc(S.shop.name || '')}" onchange="S.shop.name=this.value;save();render()">
+  <label>رقم الهاتف</label><input type="tel" value="${esc(S.shop.phone || '')}" onchange="S.shop.phone=this.value;save();render()"></div>
+  <h2>🔔 الإشعارات</h2><div class="card">الحالة: <b>${perm === 'granted' ? 'مفعلة ✅' : perm === 'denied' ? 'مرفوضة ❌ (فعّلها من إعدادات المتصفح)' : perm === 'unsupported' ? 'ما كتخدمش فهاد المتصفح' : 'ما مفعلاش'}</b>
+  ${perm === 'default' ? '<button class="btn y big" onclick="askNotif()">🔔 تفعيل الإشعارات</button>' : ''}
+  <div class="note">التنبيهات كتوصل ملي التطبيق كيكون مفتوح أو باقي فالخلفية، وكتتعاود مرة وحدة فالنهار لكل سلعة أو زبون.</div></div>
+  <h2>🏆 الأكثر مبيعا (30 يوم)</h2><div class="card">${top.length ? top.map(([n, q]) => `<div class="hist"><b>${esc(n)}</b><span>${n2(q)}</span></div>`).join('') : '<div class="empty">ما زال ما كاين مبيعات.</div>'}</div>
+  <h2>🔐 الحماية</h2><div class="card"><div class="note">الدخول للتطبيق مربوط برقم الهاتف والكود ديالك نتا بوحدك.</div><button class="btn sec big" onclick="chgLock()">✏️ بدّل الرقم أو الكود</button></div>
+  <h2>☁️ الحساب (جيميل مول المحل)</h2><div class="card">${S.shop.gmail ? `<div class="note">✅ مسجل بـ: <b>${esc(S.shop.gmail)}</b></div><button class="btn sec big" onclick="gSignOut()">🚪 خروج من الجيميل</button>` : `<div class="note">سجل دخولك بالجيميل ديال مول المحل باش يتربط التطبيق بالحساب ديالو. خاص الإنترنت غير فهاد العملية، والتطبيق كيبقى خدام بلا إنترنت.</div><button class="btn big" onclick="gSignIn()">🔵 تسجيل الدخول بالجيميل</button>`}</div>
+  <h2>💾 النسخة الاحتياطية</h2><div class="card"><div class="note">دير نسخة من وقت لآخر باش ما تضيع حتى معلومة إلا مسحتي بيانات المتصفح أو بدلتي الهاتف. زر "نسخة" كينزّل ليك ملف فالتيليفون، تقدر تحرّكو للكارت ميموري أو لمجلد Documents بوحدك. (التطبيق ماشي قادر يكتب مباشرة فالكارت ميموري، هادي حدود المتصفح.)</div>
+  <div class="btns"><button class="btn" onclick="exportData()">⬇️ نسخة</button><button class="btn sec" onclick="$('#imp').click()">⬆️ استرجاع</button></div>
+  <input id="imp" type="file" accept="application/json,.json" style="display:none" onchange="importData(this.files[0])">
+  ${installEv ? '<button class="btn y big" onclick="installEv.prompt()">📲 تثبيت التطبيق على الهاتف</button>' : ''}
+  <button class="btn sec big" style="color:var(--red)" onclick="wipe()">🗑 مسح كلشي</button></div>`;
+}
+/* ============ الجيميل (Firebase) ============ */
+let fbReady = null;
+const FB_CONFIG = {
+  apiKey: "حط_API_KEY_هنا",
+  authDomain: "مشروعك.firebaseapp.com",
+  projectId: "مشروعك",
+  storageBucket: "مشروعك.appspot.com",
+  messagingSenderId: "000000000000",
+  appId: "1:000000000000:web:xxxxxxxx"
+};
+function loadScript(su) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = su; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+async function gSignIn() {
+  if (S.shop.gmail) return toast('نتا مسجل دابا بـ ' + S.shop.gmail);
+  if (!navigator.onLine) return toast('خاص الإنترنت باش تسجل بالجيميل');
+  if (FB_CONFIG.apiKey.indexOf('هنا') > -1) return toast('خاصك تدخل إعدادات Firebase فالكود أولاً (شرح فالملف README)');
+  try {
+    toast('كيتصل بالجيميل...');
+    if (!fbReady) {
+      await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+      await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js');
+      firebase.initializeApp(FB_CONFIG); fbReady = 1;
+      try { const rd = await firebase.auth().getRedirectResult(); if (rd && rd.user) { S.shop.gmail = rd.user.email; save(); toast('تسجلتي ✅ ' + S.shop.gmail); render(); return; } } catch (e) {}
+    }
+    await firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+  } catch (e) { toast('ما تسجلش: ' + (e.code || 'غلط فالاتصال')); }
+}
+function gSignOut() { S.shop.gmail = ''; save(); render(); toast('خرجتي من الجيميل'); }
+
+async function askNotif() {
+  if (!('Notification' in window)) return toast('المتصفح ما كيدعمش الإشعارات');
+  const r = await Notification.requestPermission(); toast(r === 'granted' ? 'الإشعارات تفعلات ✅' : 'ما تفعلاتش'); render(); if (r === 'granted') { S.notified = {}; checkAlerts(); }
+}
+function exportData() {
+  const b = new Blob([JSON.stringify(S)], { type: 'application/json' }), a = document.createElement('a');
+  a.href = URL.createObjectURL(b); a.download = 'drogueri-backup-' + dayKey() + '.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  toast('تحملات النسخة الاحتياطية ✅');
+}
+function importData(f) {
+  if (!f) return; const r = new FileReader();
+  r.onload = () => { try { const d = JSON.parse(r.result); if (!d.products || !d.custs) throw 0; if (!confirm('هادشي غيعوض البيانات الحالية. نكمل؟')) return; localStorage.setItem(KEY, JSON.stringify(d)); S = load(); toast('تسترجعات البيانات ✅'); render(); checkAlerts(); } catch (e) { toast('الملف ماشي صحيح'); } };
+  r.readAsText(f);
+}
+function wipe() { if (!confirm('تمسح كلشي (السلع، الزبناء، المبيعات)؟')) return; if (!confirm('متأكد؟ ما كاينش رجوع.')) return; localStorage.removeItem(KEY); S = load(); cart = []; render(); toast('تمسح كلشي'); }
+
+/* ============ التشغيل ============ */
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+showLock();
+render(); checkAlerts();
+setInterval(checkAlerts, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { checkAlerts(); if (tab === 'home') render(); } });
+</script>
+</body>
+</html>
