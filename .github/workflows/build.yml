@@ -19,7 +19,10 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - uses: android-actions/setup-android@v3
+      - name: قبول تراخيص أندرويد
+        run: |
+          SDKMANAGER=$(find $ANDROID_HOME/cmdline-tools -name sdkmanager -type f | head -1)
+          yes | $SDKMANAGER --licenses > /dev/null 2>&1 || true
 
       - name: تثبيت Capacitor
         run: npm install
