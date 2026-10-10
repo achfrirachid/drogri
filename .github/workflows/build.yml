@@ -9,33 +9,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-
       - name: قبول تراخيص أندرويد
         run: |
           SDKMANAGER=$(find $ANDROID_HOME/cmdline-tools -name sdkmanager -type f | head -1)
           yes | $SDKMANAGER --licenses > /dev/null 2>&1 || true
-
       - name: تثبيت Capacitor
         run: npm install
-
       - name: تجهيز مشروع أندرويد
         run: npx cap add android || true
-
+      - name: تجهيز ملفات الويب
+        run: |
+          mkdir -p www
+          cp index.html manifest.json sw.js www/ 2>/dev/null || true
+          cp icon-192.png icon-512.png www/ 2>/dev/null || true
       - name: نسخ ملفات التطبيق
         run: npx cap sync android
-
       - name: بناء APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug
-
       - name: رفع APK
         uses: actions/upload-artifact@v4
         with:
