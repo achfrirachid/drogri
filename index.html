@@ -73,6 +73,12 @@ label{display:block;font-size:14px;color:var(--mut);margin:10px 2px 4px}
 .hist small{color:var(--mut);display:block;font-size:12.5px}
 .toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;z-index:90;max-width:88%;text-align:center;display:none;border:1px solid var(--tag)}
 .note{font-size:13.5px;color:var(--mut);background:var(--soft);border:1px solid var(--bd);border-radius:10px;padding:9px 11px;margin:8px 0}
+.card,.stat,.item,.alert{box-shadow:0 2px 10px rgba(20,30,60,.07)}
+h2::before{content:"🌹 "}
+input:focus,select:focus,textarea:focus{border-color:var(--tag);box-shadow:0 0 0 3px rgba(242,183,5,.18)}
+.btn{border-radius:12px}
+.stat{border-radius:14px}
+.card{border-radius:14px}
 @media(prefers-reduced-motion:no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--tag);outline-offset:1px}
 .lock{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
@@ -82,10 +88,33 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .lock p{color:var(--mut);font-size:14px;margin:0 0 12px}
 .lock label{text-align:right}
 .micbtn{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;width:48px;flex:none;font-size:20px;cursor:pointer}
+@keyframes blink{0%,100%{background:var(--card)}50%{background:var(--tag);box-shadow:0 0 16px rgba(242,183,5,.9)}}
+.blink{animation:blink .75s 8}
+/* 🎨 الألوان */
+header{background:linear-gradient(135deg,#16213e 0%,#1e3a8a 55%,#3b5bdb 100%);box-shadow:0 2px 14px rgba(20,40,90,.4)}
+.btn{background:linear-gradient(135deg,#1e3a8a,#3b5bdb)}
+.stat{border-top:4px solid var(--tag)}
+.grid2 .stat:nth-child(2){border-top-color:#51cf86}
+.grid2 .stat:nth-child(3){border-top-color:#ff922b}
+.grid2 .stat:nth-child(4){border-top-color:#e64980}
+.grid2 .stat:nth-child(5){border-top-color:#9775fa}
+.grid2 .stat:nth-child(6){border-top-color:#22b8cf}
+.grid2 .stat:nth-child(7){border-top-color:#f783ac}
+.grid2 .stat:nth-child(8){border-top-color:#20c997}
+h2{color:#b8860b;text-shadow:0 1px 2px rgba(184,134,11,.15)}
+.lock .box{border:2px solid #f2b705;box-shadow:0 12px 44px rgba(30,58,138,.28)}
+.lock h2{color:#1e3a8a}
+.toast{background:linear-gradient(135deg,#16213e,#1e3a8a)}
+.chip.on{background:linear-gradient(135deg,#1e3a8a,#3b5bdb);border-color:transparent}
+.badge{background:linear-gradient(135deg,#f2b705,#ffd43b)}
+.badge.red{background:linear-gradient(135deg,#c92a2a,#ff6b6b)}
+.badge.grn{background:linear-gradient(135deg,#2b9348,#51cf86)}
+.badge.org{background:linear-gradient(135deg,#d9480f,#ff922b)}
+.nav button.on{color:#1e3a8a}
 </style>
 </head>
 <body>
-<header><div><h1 id="hname">دروݣري محمد</h1><small id="hphone"></small></div><span class="tag" id="hdate"></span></header>
+<header><div><h1 id="hname">دروݣري محمد</h1><small id="hphone"></small></div><span class="tag" id="hdate"></span><span style="font-size:15px">❤️🌹</span></header>
 <main id="view"></main>
 <button id="fab" aria-label="إضافة">+</button>
 <nav class="nav">
@@ -108,7 +137,24 @@ function load() {
   try { const d = JSON.parse(localStorage.getItem(KEY)); if (d && d.products) { d.sales = d.sales || []; d.moves = d.moves || []; d.custs = d.custs || []; d.notified = d.notified || {}; d.shop = d.shop || {}; return d; } } catch (e) {}
   return { shop: { name: 'دروݣري محمد', phone: '0668-436479' }, products: [], moves: [], sales: [], custs: [], notified: {} };
 }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('⚠️ الذاكرة عامرة، دير نسخة احتياطية'); } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('⚠️ الذاكرة عامرة، دير نسخة احتياطية'); } autoSaveAll(); }
+let backupTimer = null;
+function autoSaveAll() { clearTimeout(backupTimer); backupTimer = setTimeout(doBackup, 3000); }
+async function doBackup() {
+  try {
+    const Cap = window.Capacitor;
+    if (Cap && Cap.Plugins && Cap.Plugins.Filesystem) {
+      const FS = Cap.Plugins.Filesystem;
+      const data = JSON.stringify(S);
+      const targets = [['Documents', 'Documents'], ['External', 'SD كارت'], ['ExternalStorage', 'التخزين الخارجي']];
+      let ok = [];
+      for (const t of targets) {
+        try { await FS.writeFile({ path: 'drogueri/backup-' + dayKey() + '.json', data: data, directory: t[0], recursive: true }); ok.push(t[1]); } catch (e) {}
+      }
+      return;
+    }
+  } catch (e) {}
+}
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const n2 = v => Math.round((+v || 0) * 100) / 100;
 const fmt = v => n2(v).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' DH';
@@ -134,7 +180,7 @@ function alerts() {
   const due = S.custs.filter(isDue).sort((a, b) => rem(b) - rem(a));
   return { stock, exp, due };
 }
-function speak(t) { try { if (!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(t); u.lang = 'ar-MA'; u.rate = 0.95; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
+function speak(t) { if (S.shop.voice === 0) return; try { if (!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(t); u.lang = 'ar-MA'; u.rate = 0.95; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
 async function notify(title, body, tag) {
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
   try {
@@ -181,36 +227,54 @@ const val = id => $('#' + id).value;
 
 /* ============ القفل ============ */
 const LKEY = 'drog_lock';
+const OWNER_PHONE = '0668436479';
+const normPhone = p => { let d = String(p || '').replace(/\D/g, ''); if (d.startsWith('212')) d = d.slice(3); if (d.startsWith('0')) d = d.slice(1); return d; };
 let LOCK = null;
 try { LOCK = JSON.parse(localStorage.getItem(LKEY) || 'null'); } catch (e) {}
 function lockHTML(setup) {
-  return `<div class="lock" id="lockScr"><div class="box"><div class="big">🔐</div><h2>${setup ? 'عيّن الحماية ديال التطبيق' : 'التطبيق محمي'}</h2><p>${setup ? 'هاد المعلومات خاصها تكون ديالك نتا بوحدك (صاحب الدروݣري). حفظهم مزيان وما تنساهمش.' : 'ما كيفتحو غير صاحب الدروݣري. دخل رقمك والكود ديالك.'}</p>
+  return `<div class="lock" id="lockScr"><div class="box"><div class="big">🔐</div><div style="font-size:22px;letter-spacing:8px">🌹❤️🌹</div><h2 style="margin-top:6px">${setup ? 'عيّن الحماية ديال التطبيق' : 'التطبيق محمي'}</h2><p>${setup ? 'هاد المعلومات خاصها تكون ديالك نتا بوحدك (صاحب الدروݣري). حفظهم مزيان وما تنساهمش.' : 'ما كيفتحو غير صاحب الدروݣري. دخل رقمك والكود ديالك.'}</p>
   <label>رقم الهاتف ديالك</label><input id="lk-phone" type="tel" inputmode="tel" placeholder="06..." autocomplete="off">
-  <label>الكود السري</label><input id="lk-code" type="password" maxlength="12" placeholder="****" autocomplete="off">
+  <label>الكود السري</label><input id="lk-code" type="password" maxlength="12" placeholder="${setup ? 'مثلاً 1982' : '****'}" autocomplete="off">
   <button class="btn big" style="margin-top:14px" onclick="tryLock(${setup ? 'true' : 'false'})">🔓 دخول</button></div></div>`;
 }
 function showLock() {
   document.body.insertAdjacentHTML('beforeend', lockHTML(!LOCK));
-  if (!LOCK) { $('#lk-phone').value = '0668436479'; $('#lk-code').value = '1982'; }
+  if (!LOCK) { $('#lk-phone').value = '0668436479'; $('#lk-code').value = '19821'; }
 }
 function tryLock(setup) {
-  const ph = ($('#lk-phone').value || '').replace(/\D/g, ''), cd = $('#lk-code').value.trim();
-  if (ph.length < 9) return toast('كتب رقم الهاتف كامل');
+  const ph = $('#lk-phone').value || '', cd = $('#lk-code').value.trim();
+  if (normPhone(ph) !== normPhone(OWNER_PHONE)) return toast('❌ هاد التطبيق ماشي ديالك — غير صاحبو كيفتحو');
   if (cd.length < 4) return toast('الكود خاصو يكون 4 حروف أو أرقام على الأقل');
-  if (setup) { LOCK = { phone: ph, code: cd }; localStorage.setItem(LKEY, JSON.stringify(LOCK)); $('#lockScr').remove(); toast('تعيّنت الحماية ✅'); return; }
-  if (LOCK && ph === LOCK.phone && cd === LOCK.code) { $('#lockScr').remove(); }
-  else toast('❌ رقم الهاتف أو الكود غالطين');
+  if (setup) { LOCK = { phone: OWNER_PHONE, code: cd }; localStorage.setItem(LKEY, JSON.stringify(LOCK)); localStorage.setItem('drog_act', '1'); $('#lockScr').remove(); toast('تفعل التطبيق ✅ من دابا كيبقى خدام حتى تمسحو'); return; }
+  if (LOCK && cd === LOCK.code) { $('#lockScr').remove(); hiddenAt = Date.now(); localStorage.setItem('drog_act', '1'); }
+  else toast('❌ الكود غالط');
 }
-function chgLock() { LOCK = null; localStorage.removeItem(LKEY); showLock(); window.scrollTo(0, 0); }
-const lockMins = () => (LOCK && LOCK.mins) || 1;
+function chgLock() { LOCK = null; localStorage.removeItem(LKEY); localStorage.removeItem('drog_act'); showLock(); window.scrollTo(0, 0); }
+const lockMins = () => (LOCK && LOCK.mins) || 1440;
+/* ============ قفل الحماية (من الأطفال) ============ */
+function guardCfg() { S.shop.guard = S.shop.guard || { on: 1, code: '1982', mins: 3 }; return S.shop.guard; }
+function showGuardLock() {
+  document.body.insertAdjacentHTML('beforeend', `<div class="lock" id="guardScr"><div class="box"><div class="big">🔒</div><div style="font-size:22px;letter-spacing:8px">🌹❤️🌹</div><h2 style="margin-top:6px">التطبيق مقفل</h2><p>دخل الكود باش تكمل الخدمة</p>
+  <label>الكود</label><input id="gd-code" type="password" maxlength="12" placeholder="****" autocomplete="off">
+  <button class="btn big" style="margin-top:14px" onclick="tryGuard()">🔓 دخول</button></div></div>`);
+}
+function tryGuard() { const cd = $('#gd-code').value.trim(); if (cd && cd === guardCfg().code) { $('#guardScr').remove(); hiddenAt = Date.now(); } else toast('❌ الكود غالط'); }
+function checkGuard() { const g = guardCfg(); if (!g.on || !hiddenAt) return; if (Date.now() - hiddenAt >= g.mins * 60000 && !document.getElementById('guardScr') && !document.getElementById('lockScr')) showGuardLock(); }
+function saveGuard() {
+  const cd = ($('#g-code').value || '').trim();
+  if (!cd) return toast('كتب الكود');
+  const g = guardCfg();
+  g.code = cd; g.mins = Math.min(10, Math.max(1, parseInt($('#g-mins').value) || 3)); g.on = $('#g-on').value === '1' ? 1 : 0;
+  save(); toast('تحفظ قفل الحماية ✅');
+}
 let hiddenAt = 0;
 function checkRelock() { if (!LOCK) return; if (hiddenAt && Date.now() - hiddenAt >= lockMins() * 60000 && !document.getElementById('lockScr')) { showLock(); } }
 function saveLockCfg() {
-  const cd = ($('#lkc-code').value || '').trim(), mn = parseInt($('#lkc-mins').value) || 1;
+  const cd = ($('#lkc-code').value || '').trim();
   if (cd.length < 4) return toast('الكود خاصو يكون 4 حروف أو أرقام على الأقل');
-  LOCK.code = cd; LOCK.mins = Math.min(10, Math.max(1, mn));
+  LOCK.code = cd;
   localStorage.setItem(LKEY, JSON.stringify(LOCK));
-  toast('تحفظات الحماية ✅ القفل من بعد ' + LOCK.mins + (LOCK.mins === 1 ? ' دقيقة' : ' دقائق') + ' ديال الخمول');
+  toast('تحفظ الكود الجديد ✅');
 }
 
 /* ============ البحث الصوتي ============ */
@@ -249,7 +313,7 @@ function home() {
   h += '<h2>⚠️ سلع سالات أو قاربت تسالي</h2>';
   h += a.stock.length ? a.stock.map(p => `<div class="alert ${p.qty <= 0 ? 'r' : ''}" onclick="openProd('${p.id}')"><div><b>${esc(p.name)}</b><small>${p.qty <= 0 ? 'سالات، خاصك تجيبها' : 'قاربت تسالي (الحد: ' + n2(p.min) + ')'}</small></div><span class="badge ${p.qty <= 0 ? 'red' : 'org'}">${n2(p.qty)} ${esc(p.unit)}</span></div>`).join('') + `<button class="btn sec big" style="margin-top:4px" onclick="shareBuy()">📤 بعث لائحة المشتريات (واتساب)</button>` : '<div class="empty">كلشي مزيان، ما كاين حتى سلعة سالات ✅</div>';
   h += '<h2>📒 زبناء الشهر ديالهم خلص</h2>';
-  h += a.due.length ? a.due.map(c => `<div class="alert r" onclick="openCust('${c.id}')"><div><b>${esc(c.name)}</b><small>خاصو يخلص • يوم ${c.dueDay} من كل شهر</small></div><span class="badge red">${fmt(rem(c))}</span></div>`).join('') : '<div class="empty">ما كاين حتى واحد خاصو يخلص دابا ✅</div>';
+  h += a.due.length ? a.due.map(c => `<div class="alert r blink" onclick="openCust('${c.id}')"><div><b>${esc(c.name)}</b><small>خاصو يخلص • يوم ${c.dueDay} من كل شهر</small></div><span class="badge red">${fmt(rem(c))}</span></div>`).join('') : '<div class="empty">ما كاين حتى واحد خاصو يخلص دابا ✅</div>';
   if (a.exp.length) { h += '<h2>⏳ الصلاحية</h2>' + a.exp.map(x => `<div class="alert ${x.d < 0 ? 'r' : ''}" onclick="openProd('${x.p.id}')"><div><b>${esc(x.p.name)}</b><small>${x.d < 0 ? 'سالات الصلاحية' : 'بقاو ' + x.d + ' يوم'}</small></div><span class="badge org">${esc(x.p.exp)}</span></div>`).join(''); }
   return h;
 }
@@ -324,7 +388,7 @@ function doStock(id) {
   const q = n2(val('s-qty')); if (q <= 0) return toast('كتب الكمية');
   const p = prod(id), b = n2(val('s-buy')); p.qty = n2(p.qty + q); if (b > 0) p.buy = b;
   S.moves.push({ id: uid(), pid: id, type: 'in', qty: q, buy: b, ts: Date.now() });
-  save(); toast('الكمية الجديدة: ' + n2(p.qty) + ' ' + p.unit); openProd(id); render(); checkAlerts();
+  save(); toast('الكمية الجديدة: ' + n2(p.qty) + ' ' + p.unit); speak(p.name + '. المخزن دابا ' + n2(p.qty) + ' ' + p.unit); openProd(id); render(); checkAlerts();
 }
 function delProd(id) { const p = prod(id); if (!confirm('تمسح "' + p.name + '" نهائيا؟')) return; S.products = S.products.filter(x => x.id !== id); save(); closeSheet(); render(); }
 
@@ -344,7 +408,7 @@ function addCart(id) {
   const p = prod(id); if (!p) return;
   const l = cart.find(x => x.pid === id); if (l) l.qty = n2(l.qty + 1); else cart.push({ pid: id, qty: 1, price: p.sell });
   const sq = $('#sq'); if (sq) sq.value = ''; const sr = $('#sres'); if (sr) sr.innerHTML = '';
-  renderCart(); toast('تزادت: ' + p.name);
+  renderCart(); toast('تزادت: ' + p.name); speak(p.name);
 }
 const cartTotal = () => n2(cart.reduce((a, l) => a + l.qty * l.price, 0));
 function renderCart() { const el = $('#cartBox'); if (!el) return; el.innerHTML = cartHtml(); recalc(); }
@@ -378,7 +442,7 @@ function checkout() {
   const ts = Date.now(), lines = cart.map(l => { const p = prod(l.pid); p.qty = n2(p.qty - l.qty); return { pid: p.id, name: p.name, qty: l.qty, price: l.price, buy: p.buy || 0, nego: l.price < p.sell ? 1 : 0 }; });
   S.sales.push({ id: uid(), ts, lines, total, paid, cid: r > 0 ? cid : '' });
   if (r > 0) cust(cid).ledger.push({ id: uid(), t: 'debt', amt: r, note: 'مشتريات: ' + lines.map(l => l.name + ' ×' + l.qty).join('، '), ts });
-  save(); cart = []; paidIn = ''; sellCust = ''; toast('تسجل البيع ✅ ' + fmt(total)); render(); checkAlerts();
+  save(); cart = []; paidIn = ''; sellCust = ''; toast('تسجل البيع ✅ ' + fmt(total)); speak('تسجل البيع. المجموع ' + fmt(total)); render(); checkAlerts();
 }
 
 /* ============ الديون ============ */
@@ -402,7 +466,8 @@ function openCust(id) {
   <div class="card" style="margin-top:10px"><div style="color:var(--mut)">الباقي</div><div class="big-n ${r > 0 ? 'red' : 'grn'}">${fmt(Math.max(0, r))}</div>
   <small style="color:var(--mut)">${r > 0 ? (lateTxt(debtSince(c)) ? lateTxt(debtSince(c)) + ' • ' : '') + (isDue(c) ? '⚠️ الشهر خلص، خاصو يخلص' : 'التذكير الشهري: يوم ' + c.dueDay) : 'خالص ✅'}</small></div>
   <div class="btns"><button class="btn grnb" onclick="payForm('${id}')">💵 خلص</button><button class="btn y" onclick="debtForm('${id}')">➕ دين جديد</button>
-  <button class="btn sec" onclick="remindWa('${id}')">💬 ذكّرو (واتساب)</button>${c.phone ? `<a class="btn sec" style="text-align:center;text-decoration:none" href="tel:${esc(c.phone)}">📞 اتصل</a>` : '<span></span>'}
+  <button class="btn sec" onclick="receiptWa('${id}')">🧾 وصل (واتساب)</button>
+  <button class="btn sec" onclick="remindWa('${id}')">💬 ذكّرو</button>${c.phone ? `<a class="btn sec" style="text-align:center;text-decoration:none" href="tel:${esc(c.phone)}">📞 اتصل</a>` : '<span></span>'}
   <button class="btn sec" onclick="custForm('${id}')">✏️ تعديل</button><button class="btn sec" style="color:var(--red)" onclick="delCust('${id}')">🗑 مسح</button></div>
   <h2>السجل</h2>${rows.map(({ l, run }) => `<div class="hist"><div>${l.t === 'debt' ? '➕ دين' : '💵 خلص'} <b class="${l.t === 'debt' ? 'red' : 'grn'}">${fmt(l.amt)}</b><small>${esc(l.note || '')}</small><small>الباقي بعدها: ${fmt(run)}</small></div><small>${fd(l.ts)}</small></div>`).join('') || '<div class="empty">ما كاين حتى حركة.</div>'}
   <button class="btn sec big" onclick="closeSheet()">إغلاق</button>`);
@@ -426,16 +491,27 @@ function saveCust(id, fromSell) {
   if (fromSell) { sellCust = c.id; }
   render(); checkAlerts();
 }
+function dLine(k) { return `<div class="line" style="grid-template-columns:1fr 96px 30px"><input id="dn-${k}" placeholder="اسم السلعة" oninput="dRecalc()"><input id="dp-${k}" type="number" inputmode="decimal" step="any" placeholder="الثمن" oninput="dRecalc()"><button class="x" onclick="this.parentNode.remove();dRecalc()">✕</button></div>`; }
+function dRecalc() { let s = 0; document.querySelectorAll('[id^="dp-"]').forEach(e => s += +e.value || 0); const el = $('#dsum'); if (el) el.textContent = fmt(n2(s)); }
 function debtForm(id) {
   const c = cust(id);
-  sheet(`<h3>دين جديد: ${esc(c.name)}</h3><div class="note">الباقي دابا: ${fmt(rem(c))}</div>
-  <label>المبلغ</label><input id="d-amt" type="number" inputmode="decimal" step="any" autofocus><label>ملاحظة (السلعة...)</label><input id="d-note">
+  sheet(`<h3>دين جديد: ${esc(c.name)}</h3><div class="note">الباقي دابا: ${fmt(rem(c))} — كتب السلع اللي خدا والثمن ديال كل وحدة، والمجموع كيتحسب بوحدو</div>
+  <div id="dlines">${dLine(0)}${dLine(1)}</div>
+  <button class="btn sm sec" style="margin:8px 0" onclick="$('#dlines').insertAdjacentHTML('beforeend', dLine(Date.now()))">➕ زيد سلعة أخرى</button>
+  <div class="tot"><span>المجموع</span><b id="dsum">0 DH</b></div>
   <button class="btn big" onclick="doDebt('${id}')">➕ سجل الدين</button><button class="btn sec big" onclick="openCust('${id}')">إلغاء</button>`);
+  dRecalc();
 }
 function doDebt(id) {
-  const a = n2(val('d-amt')); if (a <= 0) return toast('كتب المبلغ');
-  cust(id).ledger.push({ id: uid(), t: 'debt', amt: a, note: val('d-note').trim(), ts: Date.now() });
-  save(); toast('الباقي: ' + fmt(rem(cust(id)))); openCust(id); render(); checkAlerts();
+  const items = [];
+  let a = 0;
+  document.querySelectorAll('[id^="dn-"]').forEach(n => {
+    const p = $('#dp-' + n.id.slice(3));
+    if (n.value.trim() || (p && +p.value > 0)) { a += +(p && p.value) || 0; items.push(n.value.trim() + ' (' + fmt(+(p && p.value) || 0) + ')'); }
+  });
+  a = n2(a); if (a <= 0) return toast('زيد سلعة واحدة على الأقل بالثمن ديالها');
+  cust(id).ledger.push({ id: uid(), t: 'debt', amt: a, note: items.join('، '), ts: Date.now() });
+  save(); toast('تسجل الدين: ' + fmt(a) + ' — الباقي: ' + fmt(rem(cust(id)))); speak('تسجل دين ' + fmt(a)); openCust(id); render(); checkAlerts();
 }
 function payForm(id) {
   const c = cust(id), r = rem(c);
@@ -450,7 +526,46 @@ function doPay(id) {
   const c = cust(id), a = n2(val('p-amt')); if (a <= 0) return toast('كتب المبلغ');
   if (a > rem(c) && !confirm('المبلغ أكبر من الباقي (' + fmt(rem(c)) + '). نكمل؟')) return;
   c.ledger.push({ id: uid(), t: 'pay', amt: a, note: val('p-note').trim(), ts: Date.now() });
-  save(); toast('تسجل الخلاص ✅ الباقي: ' + fmt(Math.max(0, rem(c)))); openCust(id); render(); checkAlerts();
+  save(); toast('تسجل الخلاص ✅ الباقي: ' + fmt(Math.max(0, rem(c)))); speak('تسجل خلاص ' + fmt(a)); openCust(id); render(); checkAlerts();
+}
+async function receiptWa(id) {
+  const c = cust(id); if (!c) return;
+  const rows = [...c.ledger].sort((a, b) => a.ts - b.ts);
+  let total = 0, paid = 0; const items = [];
+  rows.forEach(l => {
+    if (l.t === 'debt') {
+      total += l.amt;
+      const parts = (l.note || '').split('،').map(x => x.trim()).filter(Boolean);
+      if (parts.length && parts.every(p => p.indexOf('(') > -1)) parts.forEach(p => items.push(p));
+      else items.push('مشتريات (' + fmt(l.amt) + ')');
+    } else paid += l.amt;
+  });
+  const rest = Math.max(0, n2(total - paid));
+  const NUM = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'];
+  const LN = '━━━━━━━━━━━━━━━';
+  const shop = S.shop.name || 'الدروݣري';
+  let msg = '🌹🧾 *وصل دفع - ' + shop + '* 🧾🌹\n' + LN + '\n';
+  msg += '👤 الزبون: *' + c.name + '*\n📅 ' + fd(Date.now()) + '\n' + LN + '\n';
+  msg += '🛒 *السلع المأخوذة:*\n';
+  msg += items.map((x, i) => (NUM[i] || (i + 1) + '.') + ' ' + x.replace('(', '— ').replace(')', '')).join('\n') + '\n' + LN + '\n';
+  msg += '💰 المجموع: ' + fmt(total) + '\n';
+  msg += '💵 المخلّص: ' + fmt(paid) + '\n';
+  if (rest > 0) msg += '❤️ *الباقي عليه: ' + fmt(rest) + '*\n' + LN + '\n';
+  else msg += '✅ *خالص - باقي 0 DH* 🎉\n' + LN + '\n';
+  msg += '🙏 شكراً لتعاملك معانا ❤️';
+  let n = (c.phone || '').replace(/\D/g, ''); if (n.startsWith('0')) n = '212' + n.slice(1);
+  try {
+    const rb = await fetch('seal.png');
+    if (rb.ok) {
+      const f = new File([await rb.blob()], 'wassl-drogueri.png', { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [f] })) {
+        await navigator.share({ files: [f], text: msg, title: 'وصل - ' + shop });
+        speak('تسيفط الوصل ديال ' + c.name); return;
+      }
+    }
+  } catch (e) {}
+  window.open('https://wa.me/' + (n || '') + '?text=' + encodeURIComponent(msg), '_blank');
+  speak('الوصل ديال ' + c.name);
 }
 function remindWa(id) {
   const c = cust(id); let n = (c.phone || '').replace(/\D/g, ''); if (n.startsWith('0')) n = '212' + n.slice(1);
@@ -463,6 +578,7 @@ function delCust(id) { const c = cust(id); if (!confirm('تمسح "' + c.name + 
 let installEv = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEv = e; });
 function moreView() {
+  const g = guardCfg();
   const since = Date.now() - 30 * 864e5, m = {};
   S.sales.filter(s => s.ts >= since).forEach(s => s.lines.forEach(l => m[l.name] = (m[l.name] || 0) + l.qty));
   const top = Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -473,16 +589,24 @@ function moreView() {
   ${perm === 'default' ? '<button class="btn y big" onclick="askNotif()">🔔 تفعيل الإشعارات</button>' : ''}
   <div class="note">التنبيهات كتوصل ملي التطبيق كيكون مفتوح أو باقي فالخلفية، وكتتعاود مرة وحدة فالنهار لكل سلعة أو زبون.</div></div>
   <h2>🏆 الأكثر مبيعا (30 يوم)</h2><div class="card">${top.length ? top.map(([n, q]) => `<div class="hist"><b>${esc(n)}</b><span>${n2(q)}</span></div>`).join('') : '<div class="empty">ما زال ما كاين مبيعات.</div>'}</div>
-  <h2>🔐 الحماية</h2><div class="card"><div class="note">الدخول للتطبيق مربوط برقم الهاتف والكود ديالك نتا بوحدك. التطبيق كيقفل بوحدو ملي كيطفى.</div>
-  <label>الكود السري (أرقام أو حروف، مثلا: 1982 ولا v1982)</label>
-  <input id="lkc-code" value="${esc(LOCK ? LOCK.code : '1982')}" maxlength="12">
-  <label>القفل التلقائي من بعد الخمول</label>
-  <select id="lkc-mins">${[1,2,3,4,5,6,7,8,9,10].map(m => `<option value="${m}" ${lockMins() === m ? 'selected' : ''}>${m === 1 ? 'دقيقة واحدة' : m === 2 ? 'دقيقتان' : m + ' دقائق'}</option>`).join('')}</select>
-  <button class="btn big" onclick="saveLockCfg()">💾 حفظ الحماية</button>
-  <button class="btn sec big" onclick="chgLock()">↺ إعادة تعيين الرقم والكود</button></div>
+  <h2>🔒 قفل الحماية (من الأطفال)</h2><div class="card"><div class="note">إلى ما استعملتيش التطبيق المدة اللي اختاريتيها، كيقفل، وكتدخل بالكود ديال هاد القفل (بلا رقم الهاتف).</div>
+  <label>الكود (حرف صغير مثل v ولا d، أو أرقام)</label>
+  <input id="g-code" value="${esc(guardCfg().code)}" maxlength="12">
+  <label>القفل من بعد ما يبقى خاوي</label>
+  <select id="g-mins">${[1,2,3,4,5,6,7,8,9,10].map(m => `<option value="${m}" ${guardCfg().mins === m ? 'selected' : ''}>${m === 1 ? 'دقيقة واحدة' : m === 2 ? 'دقيقتان' : m + ' دقائق'}</option>`).join('')}</select>
+  <label>القفل التلقائي</label>
+  <select id="g-on"><option value="1" ${guardCfg().on ? 'selected' : ''}>مفعل ✅</option><option value="0" ${guardCfg().on ? '' : 'selected'}>مطفي ❌</option></select>
+  <button class="btn big" onclick="saveGuard()">💾 حفظ قفل الحماية</button></div>
+  <h2>🔐 التفعيل الأساسي</h2><div class="card"><div class="note">التفعيل بالرقم والكود ديالك كيدار مرة وحدة فالعمر — من بعد التطبيق كيبقى خدام حتى تمسحو.</div>
+  <button class="btn sec big" onclick="chgLock()">↺ إعادة تعيين التفعيل (رقم + كود)</button></div>
   <h2>☁️ الحساب (جيميل مول المحل)</h2><div class="card">${S.shop.gmail ? `<div class="note">✅ مسجل بـ: <b>${esc(S.shop.gmail)}</b></div><button class="btn sec big" onclick="gSignOut()">🚪 خروج من الجيميل</button>` : `<div class="note">سجل دخولك بالجيميل ديال مول المحل باش يتربط التطبيق بالحساب ديالو. خاص الإنترنت غير فهاد العملية، والتطبيق كيبقى خدام بلا إنترنت.</div><button class="btn big" onclick="gSignIn()">🔵 تسجيل الدخول بالجيميل</button>`}</div>
-  <h2>💾 النسخة الاحتياطية</h2><div class="card"><div class="note">دير نسخة من وقت لآخر باش ما تضيع حتى معلومة إلا مسحتي بيانات المتصفح أو بدلتي الهاتف. زر "نسخة" كينزّل ليك ملف فالتيليفون، تقدر تحرّكو للكارت ميموري أو لمجلد Documents بوحدك. (التطبيق ماشي قادر يكتب مباشرة فالكارت ميموري، هادي حدود المتصفح.)</div>
-  <div class="btns"><button class="btn" onclick="exportData()">⬇️ نسخة</button><button class="btn sec" onclick="$('#imp').click()">⬆️ استرجاع</button></div>
+  <h2>🔊 الأصوات</h2><div class="card"><div class="note">النطق: قراءة أسماء المنتجات، التنبيهات الصوتية، وقراءة كل عملية (بيع، دين، خلاص...).</div>
+  <select onchange="S.shop.voice = this.value === '1' ? 1 : 0; save(); toast(this.value === '1' ? 'الأصوات مفعلة 🔊' : 'الأصوات مطفية 🔇')">
+    <option value="1" ${S.shop.voice !== 0 ? 'selected' : ''}>🔊 الأصوات مفعلة</option>
+    <option value="0" ${S.shop.voice === 0 ? 'selected' : ''}>🔇 الأصوات مطفية</option>
+  </select></div>
+  <h2>💾 النسخة الاحتياطية</h2><div class="card"><div class="note">دير نسخة من وقت لآخر باش ما تضيع حتى معلومة إلا مسحتي بيانات المتصفح أو بدلتي الهاتف. زر "نسخة" كينزّل ليك ملف فالتيليفون، تقدر تحرّكو للكارت ميموري أو لمجلد Documents بوحدك. النسخة كتحفظ تلقائياً بعد كل إضافة أو تعديل: فـDocuments وSD كارت (أول مرة غيسولك على الإذن، وافق). وإلى مسحتي التطبيق، رجّع كلشي بزر "⬆️ استرجاع" من النسخة اللي حفظتيها (فالهاتف ولا الكارت ميموري ولا الحاسوب).</div>
+  <div class="btns" style="grid-template-columns:1fr 1fr 1fr"><button class="btn" onclick="exportData()">⬇️ Downloads</button><button class="btn sec" onclick="shareBackup()">📤 للحاسوب</button><button class="btn sec" onclick="$('#imp').click()">⬆️ استرجاع</button></div>
   <input id="imp" type="file" accept="application/json,.json" style="display:none" onchange="importData(this.files[0])">
   ${installEv ? '<button class="btn y big" onclick="installEv.prompt()">📲 تثبيت التطبيق على الهاتف</button>' : ''}
   <button class="btn sec big" style="color:var(--red)" onclick="wipe()">🗑 مسح كلشي</button></div>`;
@@ -519,6 +643,20 @@ async function askNotif() {
   if (!('Notification' in window)) return toast('المتصفح ما كيدعمش الإشعارات');
   const r = await Notification.requestPermission(); toast(r === 'granted' ? 'الإشعارات تفعلات ✅' : 'ما تفعلاتش'); render(); if (r === 'granted') { S.notified = {}; checkAlerts(); }
 }
+async function shareBackup() {
+  try {
+    const b = new Blob([JSON.stringify(S)], { type: 'application/json' });
+    const f = new File([b], 'drogueri-backup-' + dayKey() + '.json', { type: 'application/json' });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: 'نسخة احتياطية - دروݣري' }); return; }
+    exportData(); toast('تحملات النسخة — صيفطها للحاسوب بواتساب ولا Gmail ولا USB');
+  } catch (e) { if (e && e.name !== 'AbortError') exportData(); }
+}
+function autoBackup() {
+  try {
+    const last = S.shop.lastBackup || 0;
+    if (Date.now() - last > 7 * 864e5) { S.shop.lastBackup = Date.now(); save(); setTimeout(() => { try { exportData(); toast('نسخة احتياطية تلقائية ✅'); } catch (e) {} }, 3000); }
+  } catch (e) {}
+}
 function exportData() {
   const b = new Blob([JSON.stringify(S)], { type: 'application/json' }), a = document.createElement('a');
   a.href = URL.createObjectURL(b); a.download = 'drogueri-backup-' + dayKey() + '.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
@@ -534,10 +672,10 @@ function wipe() { if (!confirm('تمسح كلشي (السلع، الزبناء،
 /* ============ التشغيل ============ */
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
-showLock();
-render(); checkAlerts();
+if (!localStorage.getItem('drog_act')) showLock();
+render(); checkAlerts(); autoBackup();
 setInterval(checkAlerts, 60000);
-document.addEventListener('visibilitychange', () => { if (document.hidden) { hiddenAt = Date.now(); } else { checkRelock(); checkAlerts(); if (tab === 'home') render(); } });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { hiddenAt = Date.now(); } else { checkGuard(); checkAlerts(); if (tab === 'home') render(); } });
 </script>
 </body>
 </html>
