@@ -2,8 +2,5 @@
   "appId": "com.droguerie.mohamed",
   "appName": "دروݣري محمد",
   "webDir": ".",
-  "backgroundColor": "#1e2a4a",
-  "android": {
-    "allowMixedContent": false
-  }
+  "backgroundColor": "#1e2a4a"
 }

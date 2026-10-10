@@ -2,9 +2,6 @@
   "name": "droguerie-app",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "sync": "cap sync"
-  },
   "dependencies": {
     "@capacitor/core": "^6.1.2",
     "@capacitor/android": "^6.1.2"

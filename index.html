@@ -186,22 +186,32 @@ try { LOCK = JSON.parse(localStorage.getItem(LKEY) || 'null'); } catch (e) {}
 function lockHTML(setup) {
   return `<div class="lock" id="lockScr"><div class="box"><div class="big">🔐</div><h2>${setup ? 'عيّن الحماية ديال التطبيق' : 'التطبيق محمي'}</h2><p>${setup ? 'هاد المعلومات خاصها تكون ديالك نتا بوحدك (صاحب الدروݣري). حفظهم مزيان وما تنساهمش.' : 'ما كيفتحو غير صاحب الدروݣري. دخل رقمك والكود ديالك.'}</p>
   <label>رقم الهاتف ديالك</label><input id="lk-phone" type="tel" inputmode="tel" placeholder="06..." autocomplete="off">
-  <label>الكود السري</label><input id="lk-code" type="password" inputmode="numeric" maxlength="8" placeholder="****" autocomplete="off">
+  <label>الكود السري</label><input id="lk-code" type="password" maxlength="12" placeholder="****" autocomplete="off">
   <button class="btn big" style="margin-top:14px" onclick="tryLock(${setup ? 'true' : 'false'})">🔓 دخول</button></div></div>`;
 }
 function showLock() {
   document.body.insertAdjacentHTML('beforeend', lockHTML(!LOCK));
-  if (!LOCK) { $('#lk-phone').value = '0668436479'; $('#lk-code').value = '19821'; }
+  if (!LOCK) { $('#lk-phone').value = '0668436479'; $('#lk-code').value = '1982'; }
 }
 function tryLock(setup) {
   const ph = ($('#lk-phone').value || '').replace(/\D/g, ''), cd = $('#lk-code').value.trim();
   if (ph.length < 9) return toast('كتب رقم الهاتف كامل');
-  if (cd.length < 4) return toast('الكود خاصو يكون 4 أرقام على الأقل');
+  if (cd.length < 4) return toast('الكود خاصو يكون 4 حروف أو أرقام على الأقل');
   if (setup) { LOCK = { phone: ph, code: cd }; localStorage.setItem(LKEY, JSON.stringify(LOCK)); $('#lockScr').remove(); toast('تعيّنت الحماية ✅'); return; }
   if (LOCK && ph === LOCK.phone && cd === LOCK.code) { $('#lockScr').remove(); }
   else toast('❌ رقم الهاتف أو الكود غالطين');
 }
 function chgLock() { LOCK = null; localStorage.removeItem(LKEY); showLock(); window.scrollTo(0, 0); }
+const lockMins = () => (LOCK && LOCK.mins) || 1;
+let hiddenAt = 0;
+function checkRelock() { if (!LOCK) return; if (hiddenAt && Date.now() - hiddenAt >= lockMins() * 60000 && !document.getElementById('lockScr')) { showLock(); } }
+function saveLockCfg() {
+  const cd = ($('#lkc-code').value || '').trim(), mn = parseInt($('#lkc-mins').value) || 1;
+  if (cd.length < 4) return toast('الكود خاصو يكون 4 حروف أو أرقام على الأقل');
+  LOCK.code = cd; LOCK.mins = Math.min(10, Math.max(1, mn));
+  localStorage.setItem(LKEY, JSON.stringify(LOCK));
+  toast('تحفظات الحماية ✅ القفل من بعد ' + LOCK.mins + (LOCK.mins === 1 ? ' دقيقة' : ' دقائق') + ' ديال الخمول');
+}
 
 /* ============ البحث الصوتي ============ */
 function startVoice(tid) {
@@ -463,7 +473,13 @@ function moreView() {
   ${perm === 'default' ? '<button class="btn y big" onclick="askNotif()">🔔 تفعيل الإشعارات</button>' : ''}
   <div class="note">التنبيهات كتوصل ملي التطبيق كيكون مفتوح أو باقي فالخلفية، وكتتعاود مرة وحدة فالنهار لكل سلعة أو زبون.</div></div>
   <h2>🏆 الأكثر مبيعا (30 يوم)</h2><div class="card">${top.length ? top.map(([n, q]) => `<div class="hist"><b>${esc(n)}</b><span>${n2(q)}</span></div>`).join('') : '<div class="empty">ما زال ما كاين مبيعات.</div>'}</div>
-  <h2>🔐 الحماية</h2><div class="card"><div class="note">الدخول للتطبيق مربوط برقم الهاتف والكود ديالك نتا بوحدك.</div><button class="btn sec big" onclick="chgLock()">✏️ بدّل الرقم أو الكود</button></div>
+  <h2>🔐 الحماية</h2><div class="card"><div class="note">الدخول للتطبيق مربوط برقم الهاتف والكود ديالك نتا بوحدك. التطبيق كيقفل بوحدو ملي كيطفى.</div>
+  <label>الكود السري (أرقام أو حروف، مثلا: 1982 ولا v1982)</label>
+  <input id="lkc-code" value="${esc(LOCK ? LOCK.code : '1982')}" maxlength="12">
+  <label>القفل التلقائي من بعد الخمول</label>
+  <select id="lkc-mins">${[1,2,3,4,5,6,7,8,9,10].map(m => `<option value="${m}" ${lockMins() === m ? 'selected' : ''}>${m === 1 ? 'دقيقة واحدة' : m === 2 ? 'دقيقتان' : m + ' دقائق'}</option>`).join('')}</select>
+  <button class="btn big" onclick="saveLockCfg()">💾 حفظ الحماية</button>
+  <button class="btn sec big" onclick="chgLock()">↺ إعادة تعيين الرقم والكود</button></div>
   <h2>☁️ الحساب (جيميل مول المحل)</h2><div class="card">${S.shop.gmail ? `<div class="note">✅ مسجل بـ: <b>${esc(S.shop.gmail)}</b></div><button class="btn sec big" onclick="gSignOut()">🚪 خروج من الجيميل</button>` : `<div class="note">سجل دخولك بالجيميل ديال مول المحل باش يتربط التطبيق بالحساب ديالو. خاص الإنترنت غير فهاد العملية، والتطبيق كيبقى خدام بلا إنترنت.</div><button class="btn big" onclick="gSignIn()">🔵 تسجيل الدخول بالجيميل</button>`}</div>
   <h2>💾 النسخة الاحتياطية</h2><div class="card"><div class="note">دير نسخة من وقت لآخر باش ما تضيع حتى معلومة إلا مسحتي بيانات المتصفح أو بدلتي الهاتف. زر "نسخة" كينزّل ليك ملف فالتيليفون، تقدر تحرّكو للكارت ميموري أو لمجلد Documents بوحدك. (التطبيق ماشي قادر يكتب مباشرة فالكارت ميموري، هادي حدود المتصفح.)</div>
   <div class="btns"><button class="btn" onclick="exportData()">⬇️ نسخة</button><button class="btn sec" onclick="$('#imp').click()">⬆️ استرجاع</button></div>
@@ -521,7 +537,7 @@ if (navigator.storage && navigator.storage.persist) navigator.storage.persist().
 showLock();
 render(); checkAlerts();
 setInterval(checkAlerts, 60000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { checkAlerts(); if (tab === 'home') render(); } });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { hiddenAt = Date.now(); } else { checkRelock(); checkAlerts(); if (tab === 'home') render(); } });
 </script>
 </body>
 </html>
